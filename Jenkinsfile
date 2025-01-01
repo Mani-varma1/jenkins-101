@@ -1,23 +1,30 @@
 pipeline {
     agent {
-        docker { 
+        docker {
             image 'alpine:latest'
-            args '-u 0:0'
+            args '-u 0:0' // Run the container as root
         }
     }
     triggers {
-        pollSCM '* * * * *'
+        pollSCM('* * * * *')
     }
     stages {
         stage('Build') {
             steps {
                 echo "Building.."
                 sh '''
+                # Install Python and pip
                 apk add --no-cache python3 py3-pip
-                python3 --version
-                pip3 --version
-                cd myapp
-                pip3 install -r requirements.txt
+                
+                # Create and activate a virtual environment
+                python3 -m venv venv
+                . venv/bin/activate
+                
+                # Verify Python and pip versions in the virtual environment
+                python --version
+                pip --version
+                
+                # Navigate to the app directory and install dependencies
                 cd myapp
                 pip install -r requirements.txt
                 '''
@@ -27,9 +34,13 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
+                # Activate the virtual environment
+                . venv/bin/activate
+                
+                # Navigate to the app directory and run tests
                 cd myapp
-                python3 hello.py
-                python3 hello.py --name=Brad
+                python hello.py
+                python hello.py --name=Brad
                 '''
             }
         }
@@ -37,7 +48,7 @@ pipeline {
             steps {
                 echo 'Deliver....'
                 sh '''
-                echo "doing delivery stuff.."
+                echo "Doing delivery stuff.."
                 '''
             }
         }
