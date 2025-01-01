@@ -1,7 +1,8 @@
 pipeline {
     agent {
         docker { 
-          image 'alpine:latest'
+            image 'alpine:latest'
+            args '-u 0:0'
         }
     }
     triggers {
