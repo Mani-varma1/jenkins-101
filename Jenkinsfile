@@ -1,8 +1,6 @@
 pipeline {
-    agent { 
-        node {
-            label 'docker-agent-python'
-            }
+     agent {
+        docker { image 'node:16-alpine' }
       }
     triggers {
         pollSCM '* * * * *'
