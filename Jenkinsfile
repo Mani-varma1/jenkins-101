@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
-                sudo apk add --update python3 py3-pip
+                sapk add --no-cache python3 py3-pip
                 python3 --version
                 pip3 --version
                 cd myapp
